@@ -19,15 +19,10 @@ namespace BloggingCoew
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Author>().HasMany(a => a.PostLinks);
-
-            modelBuilder.Entity<Post>(e => 
+            modelBuilder.Entity<Author>(e =>
                 {
-                    e.HasMany(p => p.AuthorLinks);
-                    e.HasMany(p => p.MetaData);
+                    e.Property(a => a.Surname).IsRequired();
                 });
-
-            modelBuilder.Entity<PostMetaData>().HasOne(m => m.Post);
 
             modelBuilder.Entity<PostAuthorLink>(e =>
             {
