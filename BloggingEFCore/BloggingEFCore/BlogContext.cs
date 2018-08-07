@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Console;
 
-namespace BloggingCoew
+namespace BloggingEFCore
 {
     public class BlogContext : DbContext
     {
