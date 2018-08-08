@@ -9,6 +9,6 @@ namespace BloggingEFCore.Model
         public string Surname { get; set; }
         public string Bio { get; set; }
 
-        public IList<PostAuthorLink> PostLinks { get; set; }
+        public virtual IList<PostAuthorLink> PostLinks { get; set; }
     }
 }

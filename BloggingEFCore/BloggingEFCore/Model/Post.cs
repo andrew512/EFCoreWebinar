@@ -11,7 +11,7 @@ namespace BloggingEFCore.Model
         public int Id { get; set; }
         public string Content { get; set; }
 
-        public IList<PostAuthorLink> AuthorLinks { get; set; }
-        public IList<PostMetaData> MetaData { get; set; }
+        public virtual IList<PostAuthorLink> AuthorLinks { get; set; }
+        public virtual IList<PostMetaData> MetaData { get; set; }
     }
 }

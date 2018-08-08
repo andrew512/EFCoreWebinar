@@ -20,13 +20,22 @@ namespace BloggingEFCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Author>(e =>
-                {
-                    e.Property(a => a.Surname).IsRequired();
-                });
+            {
+                e.Property(a => a.Surname).IsRequired();
+            });
 
             modelBuilder.Entity<PostAuthorLink>(e =>
             {
                 e.HasKey(l => new { l.AuthorId, l.PostId });
+            });
+
+            modelBuilder.Entity<PostMetaData>(e =>
+            {
+                e.HasData(new[]
+                {
+                    new PostMetaData() { Id = 1, PostId = 1, Key="key_1", Value="some value for key_1" },
+                    new PostMetaData() { Id = 2, PostId = 1, Key="key_2", Value="another value for key 2" },
+                });
             });
 
             base.OnModelCreating(modelBuilder);
@@ -35,10 +44,11 @@ namespace BloggingEFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = @"Data Source=.;Initial Catalog=BloggingEFCore;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=BloggingEFCore;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
             optionsBuilder
                 .UseLoggerFactory(ConsoleLoggerFactory).EnableSensitiveDataLogging()
+                .UseLazyLoadingProxies()
                 .UseSqlServer(connectionString);
 
             base.OnConfiguring(optionsBuilder);
