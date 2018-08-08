@@ -16,6 +16,10 @@ namespace BloggingEFCore
 
         public DbSet<Author> Authors { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostAuthorLink> PostAuthorLinks { get; set; }
+
+        public BlogContext() { }
+        public BlogContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,11 +39,15 @@ namespace BloggingEFCore
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = @"Data Source=.;Initial Catalog=BloggingEFCore;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            if (!optionsBuilder.IsConfigured)
+            {
+                // Would be in config in a real world app
+                string connectionString = @"Data Source=.;Initial Catalog=BloggingEFCore;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-            optionsBuilder
-                .UseLoggerFactory(ConsoleLoggerFactory).EnableSensitiveDataLogging()
-                .UseSqlServer(connectionString);
+                optionsBuilder.UseSqlServer(connectionString);
+            }
+
+            optionsBuilder.UseLoggerFactory(ConsoleLoggerFactory).EnableSensitiveDataLogging();
 
             base.OnConfiguring(optionsBuilder);
         }
