@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BloggingEFCore.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -8,18 +9,55 @@ namespace BloggingEFCore
     {
         static void Main(string[] args)
         {
-            using (var ctx = new BlogContext())
-            {
-                var allPosts = ctx.Posts.Include(p => p.AuthorLinks).ThenInclude(l => l.Author).ToList();
-
-                allPosts.ForEach(p => 
-                {
-                    var entry = $"({String.Join(", ", p.AuthorLinks.Select(l => l.Author.Surname))}) => {p.Content}";
-                    Console.WriteLine(entry);
-                });
-            }
+            ConnectedUpdate();
+            Console.WriteLine("==================================================");
+            DisconnectedUpdate();
+            Console.WriteLine("==================================================");
+            AsNoTracking();
 
             Console.ReadKey();
+        }
+
+        private static void ConnectedUpdate()
+        {
+            using (var ctx = new BlogContext())
+            {
+                var author = ctx.Authors.First();
+
+                author.Name = "New Name";
+
+                ctx.SaveChanges();
+            }
+        }
+
+        private static void DisconnectedUpdate()
+        {
+            Author author = null;
+            using (var ctx = new BlogContext())
+            {
+                author = ctx.Authors.First();
+            }
+
+            author.Name = "New Name Disconnected";
+
+            using (var ctx = new BlogContext())
+            {
+                ctx.Entry(author).State = EntityState.Modified;
+                ctx.SaveChanges();
+            }
+        }
+
+        private static void AsNoTracking()
+        {
+            using (var ctx = new BlogContext())
+            {
+                var author = ctx.Authors.AsNoTracking().First();
+
+                author.Name = "New Name No Tracking";
+                ctx.Update(author);
+
+                ctx.SaveChanges();
+            }
         }
     }
 }
